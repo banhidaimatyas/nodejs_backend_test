@@ -80,3 +80,108 @@ router.delete('/manyside/:id', async (req, res) => {
 })
 
 module.exports = router;
+
+
+
+// const express = require('express');
+// const { Todo } = require('./models');
+
+// const router = express.Router();
+
+// // Create a task
+// router.post('/todos', async (req, res) => {
+//     try {
+//         const todo = await Todo.create(req.body);
+//         res.status(201).json({ _id: todo._id });
+//     } catch (error) {
+//         if (error.name === 'ValidationError') {
+//             return res.status(400).json({
+//                 message: 'Hiányos vagy érvénytelen adatok'
+//             });
+//         }
+
+//         if (error.code === 11000) {
+//             return res.status(409).json({
+//                 message: 'Már létezik ilyen feladat'
+//             });
+//         }
+
+//         res.status(500).json({ message: 'Szerver hiba' });
+//     }
+// });
+
+// // Get all tasks
+// router.get('/todos', async (req, res) => {
+//     try {
+//         const todos = await Todo.find();
+//         res.status(200).json(todos);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
+// // Get one task
+// router.get('/todos/:id', async (req, res) => {
+//     try {
+//         const todo = await Todo.findById(req.params.id);
+
+//         if (!todo) {
+//             return res.status(404).json({
+//                 message: 'Nincs ilyen feladat.'
+//             });
+//         }
+
+//         res.status(200).json(todo);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
+// // Update a task
+// router.patch('/todos/:id', async (req, res) => {
+//     try {
+//         const todo = await Todo.findByIdAndUpdate(
+//             req.params.id,
+//             req.body,
+//             { returnDocument: 'after', runValidators: true }
+//         );
+
+//         if (!todo) {
+//             return res.status(404).json({
+//                 message: 'Nincs ilyen feladat.'
+//             });
+//         }
+
+//         res.status(200).json(todo);
+//     } catch (error) {
+//         if (error.name === 'ValidationError') {
+//             return res.status(400).json({
+//                 message: 'Hiányos vagy érvénytelen adatok'
+//             });
+//         }
+
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
+// // Delete a task
+// router.delete('/todos/:id', async (req, res) => {
+//     try {
+//         const todo = await Todo.findByIdAndDelete(req.params.id);
+
+//         if (!todo) {
+//             return res.status(404).json({
+//                 message: 'Nincs ilyen feladat.'
+//             });
+//         }
+
+//         res.status(200).json({
+//             message: 'Feladat törölve.',
+//             _id: todo._id
+//         });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
+// module.exports = router;

@@ -44,3 +44,28 @@ const ManySideSchema = new mongoose.Schema({
 
 module.exports.OneSide = mongoose.model('OneSide', OneSideSchema, 'onesides')
 module.exports.ManySide = mongoose.model('ManySide', ManySideSchema, 'manysides') // manysides névvel lesz létrehozva a kollekció (kis és nagy betű számít!!!).
+
+
+// const mongoose = require('mongoose');
+
+// const TodoSchema = new mongoose.Schema({
+//     _id: {
+//         type: Number,
+//         required: true
+//     },
+//     nev: {
+//         type: String,
+//         required: [true, 'A feladat neve kötelező!'],
+//         maxlength: [100, 'A feladat neve maximum 100 karakter lehet!']
+//     },
+//     leiras: {
+//         type: String,
+//         default: ''
+//     },
+//     kesz: {
+//         type: Boolean,
+//         default: false
+//     }
+// });
+
+// module.exports.Todo = mongoose.model('Todo', TodoSchema, 'todos');
