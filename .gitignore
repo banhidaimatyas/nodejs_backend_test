@@ -1,2 +1,24 @@
-/node_modules
+gitigore
+/node_modules/
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Generated files
+/coverage/
+/.nyc_output/
+/dist/
+/build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
