@@ -17,6 +17,8 @@
   "author": "Soós Gábor <soos.gabor@jedlik.eu>",
   "license": "ISC",
   "dependencies": {
+    "browserslist": "^4.29.5",
+    "caniuse-lite": "^1.0.30001820",
     "sg-backend-starter": "^1.0.3"
   },
   "devDependencies": {
