@@ -4,11 +4,11 @@ const request = require('supertest');
 const express = require('express');
 const mongoose = require('mongoose');
 
-const { ManySide } = require('./models');
-const routes = require('./routes');
+const { ManySide } = require('../../models');
+const routes = require('../../routes');
 
 
-const TEST_DB_URL = process.env.DATABASE_TEST_URL || 'mongodb://127.0.0.1:27017/test_db';
+const TEST_DB_URL = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/test_db';
 
 const app = express();
 app.use(express.json());
