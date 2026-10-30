@@ -71,6 +71,9 @@ router.delete('/manyside/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const data = await ManySide.findByIdAndDelete(id)
+        if (!data) {
+            return res.status(404).json({ message: 'Nincs ilyen azonosítóval rendelkező elem.' })
+        }
         res.send(`A ${data.nev} nevű elem törölve lett.`)
 	// Ha csak a 204-es státuszkódot akarod visszaküldeni, akkor: res.sendStatus(204)!
     }

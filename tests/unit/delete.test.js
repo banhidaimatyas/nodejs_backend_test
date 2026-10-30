@@ -8,7 +8,7 @@ const { ManySide } = require('../../models');
 const routes = require('../../routes');
 
 
-const TEST_DB_URL = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/test_db';
+const TEST_DB_URL = process.env.DATABASE_URL;
 
 const app = express();
 app.use(express.json());
@@ -82,17 +82,17 @@ describe('DELETE /api/manyside/:id (with a real database)', () => {
         expect(remainingItem.nev).toBe('Test phone B');
     });
     
-    test('8. a nonexistent ID currently returns 500 (TypeError: null.nev)', async () => {
+    test('8. a nonexistent ID returns 404', async () => {
         const res = await request(app).delete(`/api/manyside/${NONEXISTENT_ID}`);
-        expect(res.status).toBe(500);
-        expect(res.body.message).toMatch(/null/);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe('Nincs ilyen azonosítóval rendelkező elem.');
     });
     
-    test('9. deleting the same item a second time returns an error', async () => {
+    test('9. deleting the same item a second time returns 404', async () => {
         const firstResponse = await request(app).delete(`/api/manyside/${ID_A}`);
         const secondResponse = await request(app).delete(`/api/manyside/${ID_A}`);
         expect(firstResponse.status).toBe(200);
-        expect(secondResponse.status).toBe(500);
+        expect(secondResponse.status).toBe(404);
     });
 
 
@@ -100,11 +100,5 @@ describe('DELETE /api/manyside/:id (with a real database)', () => {
         const res = await request(app).delete('/api/manyside/abc');
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty('message');
-    });
-
-
-    test.skip('11. a nonexistent ID returns 404 (after the fix)', async () => {
-        const res = await request(app).delete(`/api/manyside/${NONEXISTENT_ID}`);
-        expect(res.status).toBe(404);
     });
 });
