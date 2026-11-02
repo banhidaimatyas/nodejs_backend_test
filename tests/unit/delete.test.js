@@ -19,14 +19,17 @@ describe('DELETE /api/manyside/:id', () => {
         jest.clearAllMocks();
     });
 
-    test('1. The findByIdAndDelete method should be available on the model.', () => {
-        expect(ManySide.findByIdAndDelete).toBeDefined();
-        expect(typeof ManySide.findByIdAndDelete).toBe('function');
+    test('The request should return the deleted item as plain text.', async () => {
+        ManySide.findByIdAndDelete.mockResolvedValue({
+            nev: 'Telefon'
+        });
+        const response = await request(app).delete('/api/manyside/123');
+        expect(response.headers['content-type']).toMatch(/text\/html/);
     });
 
-    test('2. The request should call findByIdAndDelete once for the item.', async () => {
+    test('The request should call findByIdAndDelete once for the item.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Test phone'
+            nev: 'Telefon'
         });
 
         await request(app).delete('/api/manyside/123');
@@ -34,9 +37,9 @@ describe('DELETE /api/manyside/:id', () => {
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledTimes(1);
     });
 
-    test('3. The request should pass the URL ID to findByIdAndDelete.', async () => {
+    test('The request should pass the URL ID to findByIdAndDelete.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Test phone'
+            nev: 'Telefon'
         });
 
         await request(app).delete('/api/manyside/123');
@@ -44,9 +47,9 @@ describe('DELETE /api/manyside/:id', () => {
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledWith('123');
     });
 
-    test('4. The request should return HTTP 200 when the item is deleted.', async () => {
+    test('The request should return HTTP 200 when the item is deleted.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Test phone'
+            nev: 'Telefon'
         });
 
         const response = await request(app).delete('/api/manyside/123');
@@ -54,17 +57,17 @@ describe('DELETE /api/manyside/:id', () => {
         expect(response.status).toBe(200);
     });
 
-    test('5. The request should return the deleted item name in its response.', async () => {
+    test('The request should return the deleted item name in its response.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Test phone'
+            nev: 'Telefon'
         });
 
         const response = await request(app).delete('/api/manyside/123');
 
-        expect(response.text).toBe('A Test phone nevű elem törölve lett.');
+        expect(response.text).toBe('A Telefon nevű elem törölve lett.');
     });
 
-    test('6. The request should return HTTP 404 with a not-found message when no item is found.', async () => {
+    test('The request should return HTTP 404 with a not-found message when no item is found.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue(null);
 
         const response = await request(app).delete('/api/manyside/999');
@@ -75,9 +78,9 @@ describe('DELETE /api/manyside/:id', () => {
         });
     });
 
-    test('7. The requests should return HTTP 200 then HTTP 404 when deleting the same item twice.', async () => {
+    test('The request should return HTTP 200 then HTTP 404 when deleting the same item twice.', async () => {
         ManySide.findByIdAndDelete
-            .mockResolvedValueOnce({ nev: 'Test phone' })
+            .mockResolvedValueOnce({ nev: 'Telefon' })
             .mockResolvedValueOnce(null);
 
         const firstResponse = await request(app).delete('/api/manyside/123');
@@ -88,7 +91,7 @@ describe('DELETE /api/manyside/:id', () => {
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledTimes(2);
     });
 
-    test('8. The request should return HTTP 500 with the error message when deletion fails.', async () => {
+    test('The request should return HTTP 500 with the error message when deletion fails.', async () => {
         ManySide.findByIdAndDelete.mockRejectedValue(new Error('Database error'));
 
         const response = await request(app).delete('/api/manyside/abc');
