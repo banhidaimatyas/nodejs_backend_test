@@ -20,7 +20,7 @@ describe('POST /api/new', () => {
         jest.clearAllMocks();
     });
 
-    test('Creates a valid item and returns its ID as JSON with status 201.', async () => {
+    test('The request should return the created item ID as JSON with HTTP 201.', async () => {
         ManySide.create.mockResolvedValue({ _id: 12 });
 
         const response = await request(app)
@@ -32,7 +32,7 @@ describe('POST /api/new', () => {
         expect(response.body).toEqual({ _id: 12 });
     });
 
-    test('Calls create once with the request body.', async () => {
+    test('The request should call create once with the submitted body.', async () => {
         const body = { _id: 13, nev: 'Tablet', ar: 100 };
         ManySide.create.mockResolvedValue({ _id: 13 });
 
@@ -42,7 +42,7 @@ describe('POST /api/new', () => {
         expect(ManySide.create).toHaveBeenCalledWith(body);
     });
 
-    test('Returns a JSON 400 response when the data fails validation.', async () => {
+    test('The request should return HTTP 400 with a validation message when creation rejects invalid data.', async () => {
         ManySide.create.mockRejectedValue({ name: 'ValidationError' });
 
         const response = await request(app)
@@ -57,7 +57,7 @@ describe('POST /api/new', () => {
         expect(ManySide.create).toHaveBeenCalledWith({ _id: 14 });
     });
 
-    test('Passes an empty body to create and returns 400 for invalid data.', async () => {
+    test('The request should return HTTP 400 with a validation message for an empty body.', async () => {
         ManySide.create.mockRejectedValue({ name: 'ValidationError' });
 
         const response = await request(app).post('/api/new').send({});
@@ -69,7 +69,7 @@ describe('POST /api/new', () => {
         });
     });
 
-    test('Returns a JSON 409 response when the item already exists.', async () => {
+    test('The request should return HTTP 409 with a duplicate-item message when the item exists.', async () => {
         ManySide.create.mockRejectedValue({ code: 11000 });
 
         const response = await request(app)
@@ -81,7 +81,7 @@ describe('POST /api/new', () => {
         expect(response.body).toEqual({ message: 'Már létezik ilyen telefon' });
     });
 
-    test('Returns a JSON 500 response when creation fails unexpectedly.', async () => {
+    test('The request should return HTTP 500 with a server-error message when creation rejects unexpectedly.', async () => {
         const logError = jest.spyOn(console, 'error').mockImplementation(() => {});
         ManySide.create.mockRejectedValue(new Error('Database error'));
 

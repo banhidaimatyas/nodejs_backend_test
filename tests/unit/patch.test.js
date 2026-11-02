@@ -20,7 +20,7 @@ describe('PATCH /api/manyside/:id', () => {
         jest.clearAllMocks();
     });
 
-    test('Updates an existing item and responds successfully.', async () => {
+    test('The request should return HTTP 200 when the update resolves with an item.', async () => {
         ManySide.findByIdAndUpdate.mockResolvedValue({
             _id: 21,
             nev: 'Frissített telefon'
@@ -34,7 +34,7 @@ describe('PATCH /api/manyside/:id', () => {
         expect(ManySide.findByIdAndUpdate).toHaveBeenCalledTimes(1);
     });
 
-    test('Calls findByIdAndUpdate with the URL ID, request body, and options.', async () => {
+    test('The request should pass the URL ID, submitted body, and update options to findByIdAndUpdate.', async () => {
         const body = { nev: 'Új név', ar: 250 };
         ManySide.findByIdAndUpdate.mockResolvedValue({ _id: 22, ...body });
 
@@ -46,7 +46,7 @@ describe('PATCH /api/manyside/:id', () => {
         });
     });
 
-    test('Returns the updated item as JSON.', async () => {
+    test('The request should return the resolved updated item as JSON.', async () => {
         const updatedItem = { _id: 23, nev: 'Új telefon', ar: 300 };
         ManySide.findByIdAndUpdate.mockResolvedValue(updatedItem);
 
@@ -58,7 +58,7 @@ describe('PATCH /api/manyside/:id', () => {
         expect(response.body).toEqual(updatedItem);
     });
 
-    test('Returns a JSON 404 response when the ID does not exist.', async () => {
+    test('The request should return HTTP 404 with a not-found message when the update resolves to null.', async () => {
         ManySide.findByIdAndUpdate.mockResolvedValue(null);
 
         const response = await request(app)
@@ -72,7 +72,7 @@ describe('PATCH /api/manyside/:id', () => {
         });
     });
 
-    test('Returns a JSON 500 response when the update fails.', async () => {
+    test('The request should return HTTP 500 with the error message when the update rejects.', async () => {
         ManySide.findByIdAndUpdate.mockRejectedValue(new Error('Database error'));
 
         const response = await request(app)
@@ -84,7 +84,7 @@ describe('PATCH /api/manyside/:id', () => {
         expect(response.body).toEqual({ message: 'Database error' });
     });
 
-    test('Passes the supplied update values through without changing them.', async () => {
+    test('The request should pass supplied update values unchanged to findByIdAndUpdate.', async () => {
         const body = { ar: 0, szin: 'kék' };
         ManySide.findByIdAndUpdate.mockResolvedValue({ _id: 26, ...body });
 

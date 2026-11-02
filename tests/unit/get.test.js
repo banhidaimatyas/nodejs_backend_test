@@ -20,12 +20,12 @@ describe('GET /api/manyside', () => {
         jest.clearAllMocks();
     });
 
-    test('GET01 - The find function exists.', () => {
+    test('The find method should be available on the model.', () => {
         expect(ManySide.find).toBeDefined();
         expect(typeof ManySide.find).toBe('function');
     });
 
-    test('GET02 - Calls find and populate.', async () => {
+    test('The request should call find once and populate its results.', async () => {
         const populateMock = jest.fn().mockResolvedValue([]);
 
         ManySide.find.mockReturnValue({
@@ -38,7 +38,7 @@ describe('GET /api/manyside', () => {
         expect(populateMock).toHaveBeenCalledTimes(1);
     });
 
-    test('GET03 - Calls populate with the correct arguments.', async () => {
+    test('The query should populate foreignId while excluding _id.', async () => {
         const populateMock = jest.fn().mockResolvedValue([]);
 
         ManySide.find.mockReturnValue({
@@ -53,7 +53,7 @@ describe('GET /api/manyside', () => {
         );
     });
 
-    test('GET04 - Returns status 200.', async () => {
+    test('The request should return HTTP 200 when the query resolves.', async () => {
         ManySide.find.mockReturnValue({
             populate: jest.fn().mockResolvedValue([])
         });
@@ -63,7 +63,7 @@ describe('GET /api/manyside', () => {
         expect(response.status).toBe(200);
     });
 
-    test('GET05 - Returns all phones as JSON.', async () => {
+    test('The request should return all queried phones as JSON.', async () => {
         const phones = [
             { _id: 1, nev: 'Samsung', ar: 100000 },
             { _id: 2, nev: 'iPhone', ar: 200000 }
@@ -79,7 +79,7 @@ describe('GET /api/manyside', () => {
         expect(response.body).toEqual(phones);
     });
 
-    test('GET06 - Returns status 500 when the query fails.', async () => {
+    test('The request should return HTTP 500 with the error message when the query rejects.', async () => {
         ManySide.find.mockReturnValue({
             populate: jest.fn().mockRejectedValue(
                 new Error('Database error')
@@ -100,12 +100,12 @@ describe('GET /api/manyside/:id', () => {
         jest.clearAllMocks();
     });
 
-    test('GET07 - The findById function exists.', () => {
+    test('The findById method should be available on the model.', () => {
         expect(ManySide.findById).toBeDefined();
         expect(typeof ManySide.findById).toBe('function');
     });
 
-    test('GET08 - Calls findById and populate.', async () => {
+    test('The request should call findById once and populate its result.', async () => {
         const populateMock = jest.fn().mockResolvedValue({
             _id: 1,
             nev: 'Samsung',
@@ -122,7 +122,7 @@ describe('GET /api/manyside/:id', () => {
         expect(populateMock).toHaveBeenCalledTimes(1);
     });
 
-    test('GET09 - Calls findById with the requested ID.', async () => {
+    test('The request should pass the URL ID to findById.', async () => {
         ManySide.findById.mockReturnValue({
             populate: jest.fn().mockResolvedValue({
                 _id: 5,
@@ -136,7 +136,7 @@ describe('GET /api/manyside/:id', () => {
         expect(ManySide.findById).toHaveBeenCalledWith('5');
     });
 
-    test('GET10 - Returns status 200 for an existing phone.', async () => {
+    test('The request should return HTTP 200 when the phone is found.', async () => {
         ManySide.findById.mockReturnValue({
             populate: jest.fn().mockResolvedValue({
                 _id: 1,
@@ -150,7 +150,7 @@ describe('GET /api/manyside/:id', () => {
         expect(response.status).toBe(200);
     });
 
-    test('GET11 - Returns the requested phone as JSON.', async () => {
+    test('The request should return the found phone as JSON.', async () => {
         const phone = {
             _id: 1,
             nev: 'Samsung',
@@ -168,7 +168,7 @@ describe('GET /api/manyside/:id', () => {
         expect(response.body).toEqual(phone);
     });
 
-    test('GET12 - Returns status 404 when the phone does not exist.', async () => {
+    test('The request should return HTTP 404 with a not-found message when no phone is found.', async () => {
         ManySide.findById.mockReturnValue({
             populate: jest.fn().mockResolvedValue(null)
         });
