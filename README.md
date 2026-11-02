@@ -1,18 +1,19 @@
-#Backend Test Projekt
+# 🧪 Backend Test Projekt
 
-Team members:
-Bánhidai Mátyás,
-Major Bálint István,
-Baracskai Dóra,
+## 👥 Team Members
 
-Contribution:
-Bánhidai Mátyás:
-- PATCH and POST tests
+- Bánhidai Mátyás
+- Major Bálint István
+- Baracskai Dóra
 
-Major Bálint István
-- DELETE tests
+## 📋 Contributions
 
-Baracskai Dóra
-- 2 endpoint GET tests
+| Team Member | Assigned Tasks |
+|:---|:---|
+| **Bánhidai Mátyás** | PATCH and POST tests |
+| **Major Bálint István** | DELETE tests |
+| **Baracskai Dóra** | GET tests (2 endpoints) |
 
-Deadline: 2026.11.16
+## 📅 Deadline
+
+**November 16, 2026**
