@@ -14,3 +14,5 @@ Major Bálint István
 
 Baracskai Dóra
 - 2 endpoint GET tests
+
+Deadline: 2026.11.16
