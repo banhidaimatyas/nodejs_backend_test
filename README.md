@@ -1,6 +1,7 @@
 # Backend Test Projekt
+A database manager through GET, POST, PATCH, and DELETE endpoints. Jest and Supertest tests cover these operations, including validation, missing records, and database-backed deletion.
 
-## Team Members
+## Team Members (Team A)
 
 - Bánhidai Mátyás
 - Major Bálint István
