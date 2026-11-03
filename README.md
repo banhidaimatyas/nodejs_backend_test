@@ -1,5 +1,5 @@
 # Backend Test Projekt
-A database manager through GET, POST, PATCH, and DELETE endpoints. Jest and Supertest tests cover these operations, including validation, missing records, and database-backed deletion.
+A database manager through GET, POST, PATCH, and DELETE endpoints. Jest and Supertest tests cover these operations, including validation, missing records, and deletion.
 
 ## Team Members (Team A)
 
