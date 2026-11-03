@@ -17,4 +17,4 @@ A database manager through GET, POST, PATCH, and DELETE endpoints. Jest and Supe
 
 ## Deadline
 
-**November 16, 2026**
+**2026 November 16**
