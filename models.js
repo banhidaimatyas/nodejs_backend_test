@@ -4,16 +4,16 @@ const mongoose = require('mongoose')
 // A kapcsolatot az _id és a foreignId biztosítja
 
 const OneSideSchema = new mongoose.Schema({
-  _id: {
-    type: Number,
-    required: true
-  },
-  nev: {
-    type: String,
-    required: true,
-    unique: true,
-    maxlength: [30, 'A név nem tartalmazhat 30 karakternél többet!'],
-  }
+    _id: {
+        type: Number,
+        required: true
+    },
+    nev: {
+        type: String,
+        required: true,
+        unique: true,
+        maxlength: [30, 'A név nem tartalmazhat 30 karakternél többet!'],
+    }
 })
 
 
