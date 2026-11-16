@@ -1,19 +1,16 @@
 jest.mock('../../models', () => ({
-    OneSide: {},
     ManySide: {
-        create: jest.fn(),
         findByIdAndUpdate: jest.fn()
     }
 }));
 
-const express = require('express');
-const request = require('supertest');
 const { ManySide } = require('../../models');
-const router = require('../../routes');
+const { updateManySide } = require('../../controllers');
 
-const app = express();
-app.use(express.json());
-app.use('/api', router);
+const createResponse = () => ({
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis()
+});
 
 describe('PATCH /api/manyside/:id', () => {
     beforeEach(() => {
@@ -25,12 +22,11 @@ describe('PATCH /api/manyside/:id', () => {
             _id: 21,
             nev: 'Frissített telefon'
         });
+        const res = createResponse();
 
-        const response = await request(app)
-            .patch('/api/manyside/21')
-            .send({ nev: 'Frissített telefon' });
+        await updateManySide({ params: { id: '21' }, body: { nev: 'Frissített telefon' } }, res);
 
-        expect(response.status).toBe(200);
+        expect(res.status).toHaveBeenCalledWith(200);
         expect(ManySide.findByIdAndUpdate).toHaveBeenCalledTimes(1);
     });
 
@@ -38,7 +34,7 @@ describe('PATCH /api/manyside/:id', () => {
         const body = { nev: 'Új név', ar: 250 };
         ManySide.findByIdAndUpdate.mockResolvedValue({ _id: 22, ...body });
 
-        await request(app).patch('/api/manyside/22').send(body);
+        await updateManySide({ params: { id: '22' }, body }, createResponse());
 
         expect(ManySide.findByIdAndUpdate).toHaveBeenCalledWith('22', body, {
             returnDocument: 'after',
@@ -49,46 +45,40 @@ describe('PATCH /api/manyside/:id', () => {
     test('The request should return the resolved updated item as JSON.', async () => {
         const updatedItem = { _id: 23, nev: 'Új telefon', ar: 300 };
         ManySide.findByIdAndUpdate.mockResolvedValue(updatedItem);
+        const res = createResponse();
 
-        const response = await request(app)
-            .patch('/api/manyside/23')
-            .send({ nev: 'Új telefon', ar: 300 });
+        await updateManySide({ params: { id: '23' }, body: updatedItem }, res);
 
-        expect(response.headers['content-type']).toMatch(/application\/json/);
-        expect(response.body).toEqual(updatedItem);
+        expect(res.json).toHaveBeenCalledWith(updatedItem);
     });
 
     test('The request should return HTTP 404 with a not-found message when the update resolves to null.', async () => {
         ManySide.findByIdAndUpdate.mockResolvedValue(null);
+        const res = createResponse();
 
-        const response = await request(app)
-            .patch('/api/manyside/24')
-            .send({ nev: 'Telefon' });
+        await updateManySide({ params: { id: '24' }, body: { nev: 'Telefon' } }, res);
 
-        expect(response.status).toBe(404);
-        expect(response.headers['content-type']).toMatch(/application\/json/);
-        expect(response.body).toEqual({
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
             message: '24 azonosítóval nem létezik elem!'
         });
     });
 
     test('The request should return HTTP 500 with the error message when the update rejects.', async () => {
         ManySide.findByIdAndUpdate.mockRejectedValue(new Error('Database error'));
+        const res = createResponse();
 
-        const response = await request(app)
-            .patch('/api/manyside/25')
-            .send({ nev: 'Telefon' });
+        await updateManySide({ params: { id: '25' }, body: { nev: 'Telefon' } }, res);
 
-        expect(response.status).toBe(500);
-        expect(response.headers['content-type']).toMatch(/application\/json/);
-        expect(response.body).toEqual({ message: 'Database error' });
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
     });
 
     test('The request should pass supplied update values unchanged to findByIdAndUpdate.', async () => {
         const body = { ar: 0, szin: 'kék' };
         ManySide.findByIdAndUpdate.mockResolvedValue({ _id: 26, ...body });
 
-        await request(app).patch('/api/manyside/26').send(body);
+        await updateManySide({ params: { id: '26' }, body }, createResponse());
 
         expect(ManySide.findByIdAndUpdate).toHaveBeenCalledWith(
             '26',
