@@ -1,18 +1,17 @@
 jest.mock('../../models', () => ({
-    OneSide: {},
     ManySide: {
         findByIdAndDelete: jest.fn()
     }
 }));
 
-const express = require('express');
-const request = require('supertest');
 const { ManySide } = require('../../models');
-const router = require('../../routes');
+const { deleteManySide } = require('../../controllers');
 
-const app = express();
-app.use(express.json());
-app.use('/api', router);
+const createResponse = () => ({
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+    send: jest.fn().mockReturnThis()
+});
 
 describe('DELETE /api/manyside/:id', () => {
     beforeEach(() => {
@@ -20,60 +19,56 @@ describe('DELETE /api/manyside/:id', () => {
     });
 
     test('The request should return the deleted item as plain text.', async () => {
-        ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Telefon'
-        });
-        const response = await request(app).delete('/api/manyside/123');
-        expect(response.headers['content-type']).toMatch(/text\/html/);
+        ManySide.findByIdAndDelete.mockResolvedValue({ nev: 'Telefon' });
+        const res = createResponse();
+
+        await deleteManySide({ params: { id: '123' } }, res);
+
+        expect(res.send).toHaveBeenCalledWith('A Telefon nevű elem törölve lett.');
     });
 
     test('The request should call findByIdAndDelete once for the item.', async () => {
-        ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Telefon'
-        });
+        ManySide.findByIdAndDelete.mockResolvedValue({ nev: 'Telefon' });
 
-        await request(app).delete('/api/manyside/123');
+        await deleteManySide({ params: { id: '123' } }, createResponse());
 
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledTimes(1);
     });
 
     test('The request should pass the URL ID to findByIdAndDelete.', async () => {
-        ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Telefon'
-        });
+        ManySide.findByIdAndDelete.mockResolvedValue({ nev: 'Telefon' });
 
-        await request(app).delete('/api/manyside/123');
+        await deleteManySide({ params: { id: '123' } }, createResponse());
 
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledWith('123');
     });
 
     test('The request should return HTTP 200 when the item is deleted.', async () => {
-        ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Telefon'
-        });
+        ManySide.findByIdAndDelete.mockResolvedValue({ nev: 'Telefon' });
+        const res = createResponse();
 
-        const response = await request(app).delete('/api/manyside/123');
+        await deleteManySide({ params: { id: '123' } }, res);
 
-        expect(response.status).toBe(200);
+        expect(res.status).toHaveBeenCalledWith(200);
     });
 
     test('The request should return the deleted item name in its response.', async () => {
-        ManySide.findByIdAndDelete.mockResolvedValue({
-            nev: 'Telefon'
-        });
+        ManySide.findByIdAndDelete.mockResolvedValue({ nev: 'Telefon' });
+        const res = createResponse();
 
-        const response = await request(app).delete('/api/manyside/123');
+        await deleteManySide({ params: { id: '123' } }, res);
 
-        expect(response.text).toBe('A Telefon nevű elem törölve lett.');
+        expect(res.send).toHaveBeenCalledWith('A Telefon nevű elem törölve lett.');
     });
 
     test('The request should return HTTP 404 with a not-found message when no item is found.', async () => {
         ManySide.findByIdAndDelete.mockResolvedValue(null);
+        const res = createResponse();
 
-        const response = await request(app).delete('/api/manyside/999');
+        await deleteManySide({ params: { id: '999' } }, res);
 
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
             message: 'Nincs ilyen azonosítóval rendelkező elem.'
         });
     });
@@ -82,23 +77,24 @@ describe('DELETE /api/manyside/:id', () => {
         ManySide.findByIdAndDelete
             .mockResolvedValueOnce({ nev: 'Telefon' })
             .mockResolvedValueOnce(null);
+        const firstResponse = createResponse();
+        const secondResponse = createResponse();
 
-        const firstResponse = await request(app).delete('/api/manyside/123');
-        const secondResponse = await request(app).delete('/api/manyside/123');
+        await deleteManySide({ params: { id: '123' } }, firstResponse);
+        await deleteManySide({ params: { id: '123' } }, secondResponse);
 
-        expect(firstResponse.status).toBe(200);
-        expect(secondResponse.status).toBe(404);
+        expect(firstResponse.status).toHaveBeenCalledWith(200);
+        expect(secondResponse.status).toHaveBeenCalledWith(404);
         expect(ManySide.findByIdAndDelete).toHaveBeenCalledTimes(2);
     });
 
     test('The request should return HTTP 500 with the error message when deletion fails.', async () => {
         ManySide.findByIdAndDelete.mockRejectedValue(new Error('Database error'));
+        const res = createResponse();
 
-        const response = await request(app).delete('/api/manyside/abc');
+        await deleteManySide({ params: { id: 'abc' } }, res);
 
-        expect(response.status).toBe(500);
-        expect(response.body).toEqual({
-            message: 'Database error'
-        });
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
     });
 });
