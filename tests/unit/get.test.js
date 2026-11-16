@@ -18,11 +18,6 @@ describe('GET /api/manyside', () => {
         jest.clearAllMocks();
     });
 
-    test('The find method should be available on the model.', () => {
-        expect(ManySide.find).toBeDefined();
-        expect(typeof ManySide.find).toBe('function');
-    });
-
     test('The request should call find once and populate its results.', async () => {
         const populateMock = jest.fn().mockResolvedValue([]);
         ManySide.find.mockReturnValue({ populate: populateMock });
@@ -68,6 +63,18 @@ describe('GET /api/manyside', () => {
         expect(res.json).toHaveBeenCalledWith(phones);
     });
 
+    test('The request should return HTTP 200 with an empty array when there are no phones.', async () => {
+        ManySide.find.mockReturnValue({
+            populate: jest.fn().mockResolvedValue([])
+        });
+        const res = createResponse();
+
+        await getManySide({}, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith([]);
+    });
+
     test('The request should return HTTP 500 with the error message when the query rejects.', async () => {
         ManySide.find.mockReturnValue({
             populate: jest.fn().mockRejectedValue(new Error('Database error'))
@@ -86,11 +93,6 @@ describe('GET /api/manyside/:id', () => {
         jest.clearAllMocks();
     });
 
-    test('The findById method should be available on the model.', () => {
-        expect(ManySide.findById).toBeDefined();
-        expect(typeof ManySide.findById).toBe('function');
-    });
-
     test('The request should call findById once and populate its result.', async () => {
         const populateMock = jest.fn().mockResolvedValue({
             _id: 1,
@@ -103,6 +105,7 @@ describe('GET /api/manyside/:id', () => {
 
         expect(ManySide.findById).toHaveBeenCalledTimes(1);
         expect(populateMock).toHaveBeenCalledTimes(1);
+        expect(populateMock).toHaveBeenCalledWith('foreignId', '-_id');
     });
 
     test('The request should pass the URL ID to findById.', async () => {
@@ -163,5 +166,29 @@ describe('GET /api/manyside/:id', () => {
         expect(res.json).toHaveBeenCalledWith({
             message: 'Nincs ilyen azonosítóval rendelkező elem.'
         });
+    });
+
+    test('The request should return HTTP 400 with an invalid-ID message when the ID cannot be cast.', async () => {
+        ManySide.findById.mockReturnValue({
+            populate: jest.fn().mockRejectedValue({ name: 'CastError' })
+        });
+        const res = createResponse();
+
+        await getManySideById({ params: { id: 'abc' } }, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Érvénytelen azonosító' });
+    });
+
+    test('The request should return HTTP 500 with the error message when the query rejects.', async () => {
+        ManySide.findById.mockReturnValue({
+            populate: jest.fn().mockRejectedValue(new Error('Database error'))
+        });
+        const res = createResponse();
+
+        await getManySideById({ params: { id: '1' } }, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
     });
 });
